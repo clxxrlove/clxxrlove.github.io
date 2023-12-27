@@ -1,0 +1,242 @@
+---
+title: "Inheritance Strategy - 단일 테이블 전략"
+categories:
+  - JPA
+tags:
+  - Inheritance Strategy
+  - Spring/JPA
+toc: true
+toc_sticky: true
+toc_label: "단일 테이블 전략"
+---
+
+### 들어가며
+
+이번에 Spring을 처음 공부해보면서, 작은 프로젝트 하나를 개발했습니다. 1차로 간단한 기능 구현만 완성했을 때 즈음 고맙게도 지인이 첫 프로젝트에서 나쁜 습관을 잡아야 한다고 리뷰를 했었습니다.
+
+그 때 지적을 받은 부분이 유저 관련 테이블의 정규화 수준이 너무 높다는 부분이었습니다. 프로젝트 특성상 일반 유저와 기업 유저를 구분해야 했는데, 그 부분에서 정규화를 하며 테이블 분리를 하여 비지니스 로직이 복잡해졌다는 부분이었습니다. 이 부분에 대해서 단일 테이블 전략을 제안받았습니다.
+
+## 단일 테이블 전략
+
+단일 테이블 전략은 객체 지향의 상속 계층을 RDBMS 테이블에 매칭하는 상속 매핑 전략 중 하나로, 여러 클래스를 단일 테이블에 매칭시키는 전략입니다.
+
+### 단일 테이블 전략 적용 이전
+
+![](https://raw.githubusercontent.com/clxxrlove/clxxrlove.github.io/master/assets/images/Pasted%20image%2020231225212732.png)
+
+실제로 설계했던 테이블을 예시로 설명하자면, user가 부모 테이블이 되어 자식으로 enterprise, personal 테이블을 가지게 됩니다. 이에 따라서 가입할 때 정한 유저의 타입에 따라서 동작시키고자 했습니다.
+
+> 다시 확인해 보니 문제가 많습니다. 전략의 문제를 떠나서 잘못 설계된 테이블이니 참고 부탁드립니다.
+
+설계한 테이블을 JPA에 매핑시키기 위해 제가 작성했던 코드는 아래와 같습니다.
+
+```java
+// User.java
+@Entity(name = "user")  
+@Getter  
+@NoArgsConstructor(access = AccessLevel.PROTECTED)  
+public class User {  
+  
+    @Id  
+    @GeneratedValue(strategy = GenerationType.IDENTITY)  
+    private Long id;  
+    private String email;  
+    private String password;  
+  
+    @Builder  
+    public User(String email, String password) {  
+        this.email = email;  
+        this.password = password;  
+    }  
+}
+```
+
+```java
+// EnterpriseUser.java
+@Entity(name = "enterprise")  
+@Getter  
+@NoArgsConstructor(access = AccessLevel.PROTECTED)  
+public class EnterpriseUser {  
+  
+    @Id  
+    @GeneratedValue(strategy = GenerationType.IDENTITY)  
+    private Long id;  
+    private String name;  
+    private String country;  
+    private String region;  
+  
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)  
+    @JoinColumn(name = "account_id")  
+    private User user;  
+  
+    @Builder  
+  
+    public EnterpriseUser(String name, String country, String region, User user) {  
+        this.name = name;  
+        this.country = country;  
+        this.region = region;  
+        this.user = user;  
+    }  
+}
+```
+
+```java
+// PersonalUser.java
+@Getter  
+@Entity(name = "personal")  
+@NoArgsConstructor(access = AccessLevel.PROTECTED)  
+public class PersonalUser {  
+  
+    @Id  
+    @GeneratedValue(strategy = GenerationType.IDENTITY)  
+    private Long id;  
+    private String name;  
+  
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)  
+    @JoinColumn(name = "account_id")  
+    private User user;  
+  
+    @Builder  
+    public PersonalUser(String name, User user) {  
+        this.name = name;  
+        this.user = user;  
+    }  
+}
+```
+
+이렇게 했을 때, 크게 복잡한 관계가 아님에도 필요 이상으로 Entity 관리가 어려워졌습니다. 예로 PersonalUser를 생성하기 위해서는 User를 먼저 생성해야만 했고, User 하나로는 관련 기능을 사용할 수 없음에도 User 객체가 그냥 생성이 되는 문제가 있었습니다. 
+
+구현하지는 않았지만 만약 JWT와 같은 토큰을 통해 내 정보를 얻는 기능을 구현한다고 하면 일반적으로 유저의 id 값을 가지고 조회를 하겠죠. 
+
+이 설계 방식에서는 유저 타입을 통해서 (설계 실수로 빼먹은 부분이지만) PersonalUser인지, EnterpriseUser인지 확인을 하고 추가 쿼리를 통해 두 데이터를 합친 DTO를 작성해서 응답해야 합니다. 
+
+간단한 기능에서도 이런 식으로 구현이 복잡해져야 하고 실수를 할 여지가 많이 생겼습니다. 
+
+### 단일 테이블 전략 적용
+
+![](https://raw.githubusercontent.com/clxxrlove/clxxrlove.github.io/master/assets/images/Pasted%20image%2020231225222016.png)
+
+분리했던 테이블을 하나의 테이블로 묶었습니다. 
+
+여기서 PersonalUser와 EnterpriseUser가 공유하지 않는 Attribute는 Nullable하게 생성해야 합니다. JPA에서는 상속 관계를 통하여 서로 다른 테이블처럼 코드를 작성할 수 있겠지만 실제로는 여러 테이블이 아닌 한 테이블에 트랜잭션이 일어나기 때문입니다.
+
+```java
+// User.java
+@Entity(name = "user")  
+@Getter  
+@DiscriminatorColumn(name = "account_type")  
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)  
+@NoArgsConstructor(access = AccessLevel.PROTECTED)  
+public class User {  
+  
+    @Id  
+    @GeneratedValue(strategy = GenerationType.IDENTITY)  
+    private Long id;  
+    private String email;  
+    private String password;  
+  
+    @Builder  
+    public User(String email, String password) {  
+        this.email = email;  
+        this.password = password;  
+    }  
+}
+```
+
+단일 테이블 전략을 사용하기 위해서 부모가 되는 테이블인 User에 
+@Inheritance와 @DiscriminatorColumn을 사용했습니다. 
+
+@Inheritance는 상속 관계 매핑을 지정하는 Annotation으로, 부모 클래스에서 어떤 전략을 사용하여 상속 관계 매핑을 할지 인자로 전달합니다. 저는 단일 테이블 전략을 사용할 것이기 때문에 strategy을 InheritanceType.SINGLE_TABLE로 지정했습니다.
+
+이후 단일 테이블 전략을 사용하는 경우엔 부모 클래스에 구분자인 @DiscriminatorColumn을 사용해서 자식 테이블들을 구분 짓는 Attribute를 설정해야 합니다. 인자를 전달하지 않으면 기본값으로는 DTYPE 이라는 Attribute를 찾아 사용하기 때문에 본인이 원하는 구분자를 인자로 전달해야 합니다.
+
+
+```java
+// EnterpriseUser.java
+@Entity  
+@Getter  
+@DiscriminatorValue("ENTERPRISE_USER")  
+@NoArgsConstructor(access = AccessLevel.PROTECTED)  
+public class EnterpriseUser extends User {  
+  
+    private String name;  
+    private String country;  
+    private String region;  
+  
+    @Builder  
+    public EnterpriseUser(String email, String password, String name, String country, String region) {  
+        super(email, password);  
+        this.name = name;  
+        this.country = country;  
+        this.region = region;  
+    }  
+}
+```
+
+EnterpriseUser는 이전과 비교해서 간결해졌습니다. 외래 키를 제거하고 상속 관계로 클래스를 표현하면서 필요한 필드만 가질 수 있게 되었습니다.
+
+또한 단일 테이블 전략에서 자식 테이블들은 부모 테이블에서 정한 구분자에 어떤 값을 넣을지 명시해줘야 합니다. 인자로 값을 전달하지 않으면 자동으로 클래스의 이름을 전달하여 구분하긴 하나 원하는 값을 전달하는 편이 좋습니다.
+
+```java
+// PersonalUser.java
+@Getter  
+@Entity
+@DiscriminatorValue("PERSONAL_USER")  
+@NoArgsConstructor(access = AccessLevel.PROTECTED)  
+public class PersonalUser extends User {  
+  
+    private String name;  
+  
+    @Builder  
+    public PersonalUser(String email, String password, String name) {  
+        super(email, password);  
+        this.name = name;  
+    }  
+}
+```
+
+PersonalUser도 정말 간결해졌습니다. 군더더기 같은 별도의 코드들이 전부 사라졌습니다. 객체 지향적으로 테이블을 설계하여 편리하게 사용할 수 있게 되었습니다.
+
+### 단일 테이블 전략의 장점
+
+```java
+public EnterpriseUser join(UserDto userDto, EnterpriseUserDto enterpriseUserDto) {  
+    User user = User.builder()  
+            .email(userDto.email())  
+            .password(passwordEncoder.encode(userDto.password()))  
+            .build();  
+  
+    EnterpriseUser enterpriseUser = enterpriseUserDto.toEntity();  
+    enterpriseUser.setUser(user);  
+      
+    return enterpriseUserRepository.save(enterpriseUser);  
+}
+```
+
+기존 회원 가입 메소드입니다. 실제 코드와는 조금 다르지만 비슷하게 작성했었습니다. 간단한 기능이지만 조금은 번거롭죠.
+
+```java
+public EnterpriseUser join(EnterpriseUserDto enterpriseUserDto) {  
+    return enterpriseUserRepository.save(enterpriseUser.toEntity());  
+}
+```
+
+이제 위에서 복잡했던 회원 가입은 이렇게 간단하게 할 수 있게 변경할 수 있습니다.
+
+위와 같이 코드가 간결해지며 Java에서도 성능적인 이득을 볼 수 있습니다. 또한 다형적 쿼리를 사용할 수 있게 되어 조금 더 객체 지향적인 코드를 작성하여 효율적입니다.
+
+특히, RDBMS에서는 쿼리 자체도 간결해지고 Join이 사용되지 않아 조회의 성능이 좋아집니다.
+
+### 단일 테이블 전략의 단점
+
+이 전략은 서비스 규모가 작거나 분리한 자식 클래스에서 많은 필드를 요구하지 않을 때 사용할 수 있습니다. 모든 테이블을 하나의 테이블로 합치는 전략이기에, 모든 테이블의 Attribute가 하나로 합쳐지기 때문에 자칫하면 지저분한 테이블이 될 가능성이 있습니다.
+
+커다란 테이블이 되는 경우에는 위에서 명시한 RDBMS에서의 장점들이 사라지게 됩니다. 필요 이상으로 조회를 하게 될 가능성이 높아지고 성능이 저하될 우려가 큽니다.
+
+또한 각 자식 테이블들이 사용해야 할 여러 Attribute들은 Nullable하게 설계해야 한다는 부분도 단점이 될 수 있습니다.
+
+### 결론
+
+단일 테이블 전략은 단점을 극복할 수 있는 경우에는 탁월한 선택입니다. 자식 테이블들이 많은 필드를 사용하지 않는다면 테이블 자체도 이해하기 쉬울 것이고, 특히 작성하게 될 코드는 간결하고 효율적으로 동작할 수 있습니다.  
+
+위 조건에 부합하지 않는 경우에는 오히려 더 큰 문제를 일으킬 수 있게 되어 구현하려고 하는 기능과 조건에 따라 다른 전략을 사용해야 할 수 있습니다.
