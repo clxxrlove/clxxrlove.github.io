@@ -1,0 +1,144 @@
+---
+title: "[JPA] 영속성 컨텍스트"
+categories:
+  - JPA
+tags:
+  - Persistence Context
+  - Spring/JPA
+toc: true
+toc_sticky: true
+toc_label: "영속성 컨텍스트"
+---
+
+영속성 컨텍스트란 **Entity를 영구 저장하는 환경**을 말한다. 영속성 컨텍스트는 눈에 보이지 않고, 논리적인 개념이다. 우리는 직접 영속성 컨텍스트에 접근할 수 없고, EntitiyManager를 통해서 영속성 컨텍스트에 접근할 수 있다. 
+
+## Life cycle Entity
+
+Entity의 Life cycle은 다음과 같다.
+
+- 비영속 (new/transient)
+	영속성 컨텍스트와 전혀 관계가 없는 새로운 상태
+	-> 아직 EntityManager에 persist() 되지 않은 상태를 말함
+- 영속 (managed)
+	영속성 컨텍스트에 관리되는 상태
+- 준영속 (detached)
+	영속성 컨텍스트에 저장되었다가 분리된 상태
+- 삭제 (removed)
+	삭제된 상태
+
+### 비영속과 영속
+
+비영속은 영속성 컨텍스트와 관계가 없다고 위에 설명했는데, 정말 단순하게 받아들여도 된다.
+
+```java
+MyEntity myEntity = new MyEntity();
+myEntity.setId(1L);
+myEntity.setName("Jiyong");
+```
+
+위 상태가 비영속이다. 그냥 JPA와 관계가 없는 새로 만들어진 Entity를 말한다.
+
+```java
+// Transaction 내부
+MyEntity myEntity = new MyEntity();
+myEntity.setId(1L);
+myEntity.setName("Persistence Jiyong");
+
+entityManager.persist(myEntity);
+```
+
+비영속 상태의 myEntity를 persist 하여 영속성 컨텍스트에 저장한다. 이 상태가 영속 상태다.
+
+여기서 참고해야 할 점은 **영속과 데이터베이스에 저장하는 행위는 다르다**는 것이다. Transaction 내에서 영속을 한 경우 Transaction이 commit 되어야만 데이터베이스에 저장된다.
+
+> 영속된 Entity를 데이터베이스에 넣는 작업은, 영속성 컨텍스트가 주체가 아니고 쓰기 지연 SQL 저장소에서 flush를 진행한다. 이 쓰기 지연은 뒤에서 설명하도록 한다.
+
+### 준영속과 삭제
+
+영속과 비영속은 그렇게 어려운 개념은 아니다. 그렇다면 준영속과 삭제는 뭘까?
+
+EntityManager에서의 detach는 이 Entity와 영속성 컨텍스트를 분리한다. 이 상태가 준영속 상태이다. EntityManager의 remove는 이 Entity를 영속성 컨텍스트에서 제거한다. 
+
+그럼 분리와 삭제는 무슨 차이가 있을까? 
+
+EntityManager는 Entity를 detach 한다고 그 Entity를 영속성 컨텍스트에서 제거하지 않는다. 다시 persist 하기 전까지 그 상태를 계속해서 기억하고 있는다. 분리된 Entity를 조작하여 값을 변경하더라도 영속성 컨텍스트는 추적하지 않고 아까 그 상태만을 기억한다. 필요한 경우 persist 하여 영속성 컨텍스트와 동기화 할 수 있는 상태이고, detach 한다고 해서 데이터베이스에 영향이 가지는 않는다.
+
+그럼 삭제는 어떨까? remove 하는 순간 EntityManager는 해당 Entity를 영속성 컨텍스트에서 삭제하고, Transaction이 commit 되는 즉시 제거한다. 
+
+## 영속성 컨텍스트의 특징
+
+영속성 컨텍스트가 우리에게 주는 여러 이점을 알아보려고 한다.
+
+### 1차 캐시
+
+영속성 컨텍스트는 Entity에 대해 1차 캐시가 된다. 특정 Entity를 검색을 할 때, EntityManager는 영속성 컨텍스트를 먼저 조회한다. 만약 여기에 존재한다면 바로 반환한다. 이 말은 즉, 1차 캐시에 있는 Entity는 데이터베이스에 조회를 하지 않는다는 것이다.
+
+```java
+// 같은 Transaction의 내부
+MyEntity myEntity = entityManager.find(MyEntity.class, 1L); // Hibernate가 select 조회
+MyEntity otherEntity = entityManager.find(MyEntity.class, 1L); // select 조회 없음
+```
+
+### 동일성 보장
+
+또한 이렇게 1차 캐시에서 받아온 Entity는 동일성 보장이 된다.
+
+```java
+myEntity == otherEntity; // true
+```
+
+REPEATABLE READ 수준의 트랜잭션 격리 수준을 애플리케이션 차원에서 제공하므로, 동일성 보장이 가능한 것이다.
+
+> REPEATABLE READ (반복 가능한 읽기)란?
+>
+> 트랜잭션이 시작될 때 읽은 데이터는 트랜잭션이 종료될 때까지 변경되지 않는다. 따라서 한 트랜잭션 내에서 같은 쿼리를 여러 번 실행해도 결과가 항상 동일하다. 
+> Dirty Read와 Non-repeatable Read는 방지하지만, Phantom Read 문제는 여전히 발생할 수 있다.
+
+
+### 쓰기 지연
+
+위에서도 언급했듯이 EntityManager는 Transaction을 commit 해야 작업한 Entity를 데이터베이스에 반영하는데, 이를 쓰기 지연이라고 한다. 
+
+쓰기 지연을 하는 이유는 성능과 관련이 있는데, 쓰기(생성, 수정 및 삭제) 동작을 할 때마다 데이터베이스에 요청하지 않고 일괄 처리(batch processing)로 데이터베이스에 연결하는 cost를 줄이는 것이다. 
+
+또한, 일괄 처리로 인해서 동일한 Transaction 내부에서 데이터의 일관성을 유지할 수 있다. 다만 이 장점에서 파생되는 단점 또한 존재하는데, 다른 Transaction과는 일관성에 문제가 생길 수 있다는 부분도 존재한다. 또한, 다른 Transaction에서 쓰기를 할 때 교착 상태가 일어날 수도 있다는 문제도 가지고 있다. 
+
+위 문제를 일괄 처리의 크기를 조정하거나, 데이터의 일관성이 중요한 경우에는 쓰기 지연을 사용하지 않는 것도 방법이다. 
+
+```
+hibernate.jdbc.batch_size = 원하는 값
+```
+
+Hibernate의 경우 위와 같이 설정하는데, 필요한 만큼 일괄 처리의 크기를 조정할 수 있고 1을 두는 경우 쓰기 지연을 비활성화 한다. batch_size를 조정한다는 의미는 정해진 개수만큼 Entity의 변경 사항을 반영한다는 것인데, 이 시점이 commit 이전 시점이 될 수 있다는 것이다. 
+
+즉, 이 batch_size를 조절하지 않더라도 기본적으로 쓰기 지연이 일어나고 있다는 것을 알아야 하고 batch_size를 조절하는 것은 쓰기 지연의 세밀한 조정을 위한 것이다. 쓰기 지연은 반드시 사용해야 하는 것이 아니므로, 불필요하다면 비활성화 해도 좋다.
+
+### 변경 감지 (Dirty Checking)
+
+변경 감지는 크게 어려운 내용은 아니다. 영속성 컨텍스트 내부의 Entity에 변경이 감지되면 해당 내용을 데이터베이스에 동기화하는 과정을 말한다. 
+
+변경 감지는 일반적으로 commit 이전에 동작하는데, 정확히 영속성 컨텍스트가 flush 하는 순간을 말한다. 영속성 컨텍스트에 저장된 캐시에서 현재 Entity와 그 Snapshot을 비교하여 변경되었다면 쓰기 지연 SQL 저장소에 쿼리를 생성하여 flush를 한다. 
+
+즉, 영속성 컨텍스트에 있는 Entity를 수정한 경우 굳이 다시 persist 하여 동기화를 시키는 게 아니라 변경 감지라는 매커니즘에 의해서 자동으로 변경된다.
+
+
+### Flush (플러시)
+
+위에서 flush를 계속 언급했는데, flush가 어떤 건지 간단하게 정리하려고 한다. flush가 하는 일은 다음과 같다.
+
+1. 변경 감지
+2. Entity를 쓰기 지연 SQL 저장소에 등록
+3. 쓰기 지연 SQL 저장소의 쿼리를 데이터베이스에 전송
+
+이와 같은 일을 하는데, 영속성 컨텍스트를 flush 하는 방법은 몇 가지가 있는데 이는 다음과 같다.
+
+1. EntityManager의 flush() 호출
+2. Transaction의 commit 과정에서 자동 호출
+3. JPQL의 쿼리 실행 과정에서 자동 호출
+
+사실 Transaction 내부에서는 특별한 경우가 아니라면 flush를 직접 호출할 일은 없으나, 필요 시에 commit 과정까지 가지 않아도 바로 flush를 호출할 수 있다는 점이 중요하다. 또한 도중에 flush를 한다고 영속성 컨텍스트을 비우는 것이 아니니 걱정하지 않아도 된다. 그저 쓰기 지연 SQL 저장소를 처리하여 비우는 것 뿐이다. (1차 캐시 삭제 등의 행위는 없다는 것이다.)
+
+또한 JPQL 쿼리 실행 시 flush가 호출되는 이유에 대해서 말하자면, 기본적으로 Transaction 내부에서는 추가적인 flush 호출 또는 commit이 되어야 영속성 컨텍스트의 Entity가 데이터베이스와 동기화된다. 이 때, JPQL로 쿼리를 실행하는 경우 Transaction 내부에서 작업한 Entity와 관련 있는 쿼리 실행 시 문제가 생길 수 있다. 
+
+그렇기에 JPA는 JPQL 쿼리 실행 시 자동적으로 flush를 호출 시켜 데이터베이스와 영속성 컨텍스트를 동기화 시키고 데이터의 일관성을 유지하고자 하는 것이다.
+
