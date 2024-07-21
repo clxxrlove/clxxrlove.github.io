@@ -10,13 +10,13 @@ toc_sticky: true
 toc_label: Challenge 1주차 회고
 ---
 
-![[부스트캠프웹모바일 커버용.jpeg]]
+![](https://raw.githubusercontent.com/clxxrlove/clxxrlove.github.io/master/assets/images/%E1%84%87%E1%85%AE%E1%84%89%E1%85%B3%E1%84%90%E1%85%B3%E1%84%8F%E1%85%A2%E1%86%B7%E1%84%91%E1%85%B3%E1%84%8B%E1%85%B0%E1%86%B8%E1%84%86%E1%85%A9%E1%84%87%E1%85%A1%E1%84%8B%E1%85%B5%E1%86%AF%20%E1%84%8F%E1%85%A5%E1%84%87%E1%85%A5%E1%84%8B%E1%85%AD%E1%86%BC.jpeg)
 
 정말 길고 길었던 1주가 지나갔다...
 
 ## 겸사겸사 챌린지 입과 후기
 
-![[Pasted image 20240720135018.png]]
+![](https://raw.githubusercontent.com/clxxrlove/clxxrlove.github.io/master/assets/images/boostcamp_c_01_01.png)
 
 2차 문제 해결력 테스트가 끝나고, 너무 떨렸다. 아슬아슬하기는 했으나 시간 내에 다 풀었고 기다리기만 하면 됐다. 그런데 문제는 부스트캠프의 결과 공지는 예정이 없다.
 
