@@ -1,0 +1,278 @@
+@import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css');
+
+:root {
+  --c-primary: #111111;
+  --c-secondary: #555555;
+  --c-muted: #888888;
+  --c-accent: #A65B33;
+  --c-accent-bg: #F6EEE8;
+  --c-border: #DFDFDF;
+  --c-bg: #FFFFFF;
+
+  --sp-1: 4px;
+  --sp-2: 8px;
+  --sp-3: 12px;
+  --sp-4: 16px;
+  --sp-5: 20px;
+  --sp-6: 24px;
+  --sp-8: 32px;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html,
+body {
+  width: 794px;
+  height: 1123px;
+  background: #f0f0f0;
+}
+
+body {
+  font-family: 'Pretendard', -apple-system, 'Apple SD Gothic Neo', sans-serif;
+  font-size: 10.5px;
+  line-height: 1.65;
+  color: var(--c-primary);
+  -webkit-font-smoothing: antialiased;
+}
+
+.page {
+  width: 794px;
+  height: 1123px;
+  background: var(--c-bg);
+  padding: 50px 56px 42px 56px;
+  overflow: hidden;
+  position: relative;
+}
+
+/* ── Page Header (pages 2-5) ───────────────────── */
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--c-border);
+  margin-bottom: 24px;
+}
+
+.page-header__name {
+  font-size: 9px;
+  font-weight: 600;
+  color: var(--c-muted);
+  letter-spacing: 0.06em;
+}
+
+.page-header__label {
+  font-size: 9px;
+  font-weight: 500;
+  color: var(--c-muted);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+/* ── Section Block ─────────────────────────────── */
+.block {
+  margin-bottom: 24px;
+}
+
+.block+.block {
+  margin-top: 0;
+}
+
+.block__heading {
+  font-size: 9.5px;
+  font-weight: 700;
+  color: var(--c-primary);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding-bottom: 5px;
+  border-bottom: 1px solid #D8CDC6;
+  display: inline-block;
+  margin-bottom: 12px;
+}
+
+/* ── Entry Row ─────────────────────────────────── */
+.entry {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 10px;
+}
+
+.entry__left {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.entry__title {
+  font-size: 10.5px;
+  font-weight: 600;
+  color: var(--c-primary);
+}
+
+.entry__sub {
+  font-size: 9.5px;
+  color: var(--c-secondary);
+  line-height: 1.5;
+}
+
+.entry__date {
+  font-size: 9.5px;
+  color: var(--c-muted);
+  white-space: nowrap;
+  padding-left: 16px;
+  flex-shrink: 0;
+  padding-top: 1px;
+}
+
+/* ── Bullet Items (Problem / Solution / Result) ── */
+.item-group {
+  margin-bottom: 16px;
+}
+
+.item-group__title {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--c-primary);
+  margin-bottom: 7px;
+}
+
+.item-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.item {
+  display: flex;
+  gap: 7px;
+  font-size: 10px;
+  line-height: 1.6;
+  align-items: flex-start;
+}
+
+.item__chip {
+  font-size: 8px;
+  font-weight: 700;
+  color: var(--c-secondary);
+  background: #F6F3F1;
+  border: 1px solid #E2DAD5;
+  padding: 2px 6px;
+  border-radius: 3px;
+  white-space: nowrap;
+  flex-shrink: 0;
+  margin-top: 2px;
+  min-width: 34px;
+  text-align: center;
+}
+
+.item__chip--neutral {
+  color: var(--c-secondary);
+  background: #F5F5F5;
+  border-color: #E3E3E3;
+}
+
+.item__text {
+  color: var(--c-primary);
+}
+
+/* ── Metric ────────────────────────────────────── */
+.metric {
+  font-weight: 700;
+  color: var(--c-accent);
+}
+
+/* ── Tag Row ───────────────────────────────────── */
+.tag-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  margin-bottom: 12px;
+}
+
+.tag {
+  font-size: 8.5px;
+  font-weight: 500;
+  border: 1px solid #DDD6D1;
+  color: var(--c-secondary);
+  padding: 2px 7px;
+  border-radius: 3px;
+  background: #FBFAF9;
+}
+
+/* ── Badge ─────────────────────────────────────── */
+.badge {
+  font-size: 9px;
+  font-weight: 700;
+  padding: 3px 9px;
+  border-radius: 3px;
+  white-space: nowrap;
+}
+
+.badge--accent {
+  background: #F2E8E2;
+  color: #875033;
+}
+
+.badge--neutral {
+  background: #EBEBEB;
+  color: var(--c-secondary);
+}
+
+/* ── Project Header ────────────────────────────── */
+.project-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 8px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--c-border);
+}
+
+.project-header__left {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.project-header__name {
+  font-size: 19px;
+  font-weight: 700;
+  color: var(--c-primary);
+  letter-spacing: -0.02em;
+}
+
+.project-header__desc {
+  font-size: 10px;
+  color: var(--c-secondary);
+  line-height: 1.55;
+}
+
+.project-header__badges {
+  display: flex;
+  gap: 5px;
+  padding-top: 2px;
+}
+
+.project-note {
+  margin-bottom: 14px;
+  padding: 8px 0 10px 0;
+  border-bottom: 1px solid #ECE6E1;
+  font-size: 10px;
+  line-height: 1.65;
+  color: var(--c-secondary);
+}
+
+/* ── Divider ───────────────────────────────────── */
+.divider {
+  height: 1px;
+  background: var(--c-border);
+  margin: 18px 0;
+}
