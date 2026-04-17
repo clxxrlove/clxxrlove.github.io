@@ -1,0 +1,1027 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>정지용 포트폴리오</title>
+  <style>
+    @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css');
+
+    :root {
+      --c-primary: #111111;
+      --c-secondary: #555555;
+      --c-muted: #888888;
+      --c-accent: #a65b33;
+      --c-accent-bg: #f6eee8;
+      --c-border: #dfdfdf;
+      --c-bg: #ffffff;
+    }
+
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+      background: #f0f0f0;
+    }
+
+    body {
+      min-height: 100vh;
+      padding: 12px 0 32px;
+      background: #f0f0f0;
+      font-family: 'Pretendard', -apple-system, 'Apple SD Gothic Neo', sans-serif;
+      font-size: 10.5px;
+      line-height: 1.65;
+      color: var(--c-primary);
+      -webkit-font-smoothing: antialiased;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    code {
+      font-family: inherit;
+      font-size: inherit;
+      font-weight: 500;
+      color: var(--c-secondary);
+    }
+
+    .portfolio {
+      width: 100%;
+    }
+
+    .jump-links {
+      width: min(794px, 100%);
+      margin: 0 auto 12px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      padding: 0 8px;
+    }
+
+    .jump-link {
+      display: inline-flex;
+      align-items: center;
+      padding: 8px 12px;
+      border: 1px solid #d9d9d9;
+      border-radius: 999px;
+      background: #ffffff;
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--c-secondary);
+    }
+
+    .sheet {
+      margin: 0;
+      padding: 0;
+    }
+
+    .page {
+      width: min(794px, 100%);
+      min-height: 1123px;
+      height: auto;
+      margin: 0 auto 12px;
+      padding: 50px 56px 42px;
+      overflow: hidden;
+      position: relative;
+      border-radius: 0;
+      background: var(--c-bg);
+    }
+
+    .page-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      padding-bottom: 8px;
+      border-bottom: 1px solid var(--c-border);
+      margin-bottom: 24px;
+    }
+
+    .page-header__name {
+      font-size: 9px;
+      font-weight: 600;
+      color: var(--c-muted);
+      letter-spacing: 0.06em;
+    }
+
+    .page-header__label {
+      font-size: 9px;
+      font-weight: 500;
+      color: var(--c-muted);
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    .block {
+      margin-bottom: 24px;
+    }
+
+    .block + .block {
+      margin-top: 0;
+    }
+
+    .block__heading {
+      display: inline-block;
+      margin-bottom: 12px;
+      padding-bottom: 5px;
+      border-bottom: 1px solid #d8cdc6;
+      font-size: 9.5px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--c-primary);
+    }
+
+    .entry {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 10px;
+    }
+
+    .entry__left {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .entry__title {
+      font-size: 10.5px;
+      font-weight: 600;
+      color: var(--c-primary);
+    }
+
+    .entry__sub {
+      font-size: 9.5px;
+      line-height: 1.5;
+      color: var(--c-secondary);
+    }
+
+    .entry__date {
+      flex-shrink: 0;
+      padding-top: 1px;
+      padding-left: 16px;
+      font-size: 9.5px;
+      white-space: nowrap;
+      color: var(--c-muted);
+    }
+
+    .item-group {
+      margin-bottom: 16px;
+    }
+
+    .item-group__title {
+      margin-bottom: 7px;
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--c-primary);
+    }
+
+    .item-list {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      list-style: none;
+    }
+
+    .item {
+      display: flex;
+      align-items: flex-start;
+      gap: 7px;
+      font-size: 10px;
+      line-height: 1.6;
+    }
+
+    .item__chip {
+      min-width: 34px;
+      margin-top: 2px;
+      padding: 2px 6px;
+      border: 1px solid #e2dad5;
+      border-radius: 3px;
+      background: #f6f3f1;
+      font-size: 8px;
+      font-weight: 700;
+      text-align: center;
+      white-space: nowrap;
+      color: var(--c-secondary);
+      flex-shrink: 0;
+    }
+
+    .item__chip--neutral {
+      border-color: #e3e3e3;
+      background: #f5f5f5;
+      color: var(--c-secondary);
+    }
+
+    .item__text {
+      color: var(--c-primary);
+    }
+
+    .metric {
+      font-weight: 700;
+      color: var(--c-accent);
+    }
+
+    .tag-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 5px;
+      margin-bottom: 12px;
+    }
+
+    .tag {
+      padding: 2px 7px;
+      border: 1px solid #ddd6d1;
+      border-radius: 3px;
+      background: #fbfaf9;
+      font-size: 8.5px;
+      font-weight: 500;
+      color: var(--c-secondary);
+    }
+
+    .badge {
+      padding: 3px 9px;
+      border-radius: 3px;
+      font-size: 9px;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .badge--accent {
+      background: #f2e8e2;
+      color: #875033;
+    }
+
+    .badge--neutral {
+      background: #ebebeb;
+      color: var(--c-secondary);
+    }
+
+    .project-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 8px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--c-border);
+    }
+
+    .project-header__left {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .project-header__name {
+      font-size: 19px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      color: var(--c-primary);
+    }
+
+    .project-header__desc {
+      font-size: 10px;
+      line-height: 1.55;
+      color: var(--c-secondary);
+    }
+
+    .project-header__badges {
+      display: flex;
+      gap: 5px;
+      padding-top: 2px;
+    }
+
+    .project-note {
+      margin-bottom: 14px;
+      padding: 8px 0 10px;
+      border-bottom: 1px solid #ece6e1;
+      font-size: 10px;
+      line-height: 1.65;
+      color: var(--c-secondary);
+    }
+
+    .divider {
+      height: 1px;
+      margin: 18px 0;
+      background: var(--c-border);
+    }
+
+    .hero {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      gap: 20px;
+      padding-bottom: 16px;
+      border-bottom: 2px solid var(--c-primary);
+    }
+
+    .hero__left {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .hero__name {
+      font-size: 31px;
+      font-weight: 700;
+      letter-spacing: -0.04em;
+      line-height: 1;
+      color: var(--c-primary);
+    }
+
+    .hero__role {
+      font-size: 13px;
+      letter-spacing: 0.02em;
+      color: var(--c-secondary);
+    }
+
+    .hero__contact {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+      gap: 14px;
+      font-size: 9.5px;
+      color: var(--c-muted);
+    }
+
+    .section {
+      margin-top: 20px;
+    }
+
+    .section__label {
+      display: inline-block;
+      margin-bottom: 12px;
+      padding-bottom: 4px;
+      border-bottom: 1px solid #d8cdc6;
+      font-size: 9.5px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--c-muted);
+    }
+
+    .positioning {
+      font-size: 15px;
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      line-height: 1.48;
+      color: var(--c-primary);
+    }
+
+    .intro {
+      margin-top: 11px;
+      font-size: 10.7px;
+      line-height: 1.82;
+      color: var(--c-primary);
+    }
+
+    .strengths {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 12px;
+    }
+
+    .strength-chip {
+      display: inline-flex;
+      align-items: center;
+      padding: 4px 9px;
+      border: 1px solid #ddd6d1;
+      border-radius: 999px;
+      background: #fbfaf9;
+      font-size: 8.8px;
+      line-height: 1;
+      color: var(--c-secondary);
+    }
+
+    .project-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .project-item {
+      padding: 13px 0 12px;
+      border-top: 1px solid #ece7e3;
+    }
+
+    .project-item:first-child {
+      padding-top: 0;
+      border-top: none;
+    }
+
+    .project-item__top {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 12px;
+      margin-bottom: 5px;
+    }
+
+    .project-item__name {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--c-primary);
+    }
+
+    .project-item__date {
+      font-size: 9px;
+      white-space: nowrap;
+      color: var(--c-muted);
+    }
+
+    .project-item__summary {
+      font-size: 10.5px;
+      line-height: 1.58;
+      color: var(--c-primary);
+    }
+
+    .project-item__detail {
+      margin-top: 5px;
+      font-size: 9.8px;
+      line-height: 1.62;
+      color: var(--c-secondary);
+    }
+
+    .project-item__result {
+      margin-top: 6px;
+      font-size: 9.5px;
+      line-height: 1.58;
+      color: var(--c-secondary);
+    }
+
+    .project-item__result strong {
+      font-weight: 600;
+      color: var(--c-accent);
+    }
+
+    .background-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .background-item {
+      padding-top: 10px;
+      border-top: 1px solid #f0ece9;
+    }
+
+    .background-item:first-child {
+      padding-top: 0;
+      border-top: none;
+    }
+
+    .background-item__title {
+      font-size: 10.1px;
+      font-weight: 600;
+      line-height: 1.45;
+      color: var(--c-primary);
+    }
+
+    .background-item__sub {
+      margin-top: 3px;
+      font-size: 9.4px;
+      line-height: 1.62;
+      color: var(--c-secondary);
+    }
+
+    .two-col {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 28px;
+    }
+
+    .metric-box {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      margin: 2px 0 14px;
+      padding: 8px 12px;
+      border: 1px solid #e9d9cf;
+      border-radius: 6px;
+      background: var(--c-accent-bg);
+    }
+
+    .metric-box__main {
+      font-size: 16px;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      color: var(--c-accent);
+    }
+
+    .metric-box__sub {
+      font-size: 9.2px;
+      line-height: 1.45;
+      color: var(--c-secondary);
+    }
+
+    @media (max-width: 840px) {
+      body {
+        padding: 8px 0 24px;
+      }
+
+      .page {
+        min-height: auto;
+        padding: 28px 20px 24px;
+      }
+
+      .hero,
+      .page-header,
+      .project-header,
+      .project-item__top {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .hero__contact,
+      .project-header__badges {
+        justify-content: flex-start;
+      }
+
+      .two-col {
+        grid-template-columns: 1fr;
+        gap: 20px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="portfolio">
+    <nav class="jump-links" aria-label="섹션 바로가기">
+      <a class="jump-link" href="#intro">소개</a>
+      <a class="jump-link" href="#keepiluv">Keepiluv</a>
+      <a class="jump-link" href="#heim">Heim</a>
+      <a class="jump-link" href="#reed">Reed</a>
+    </nav>
+
+    <section class="sheet" id="intro">
+      <div class="page">
+        <div class="hero">
+          <div class="hero__left">
+            <div class="hero__name">정지용</div>
+            <div class="hero__role">iOS Developer</div>
+          </div>
+          <div class="hero__contact">
+            <span>camp5803@icloud.com</span>
+            <span>010-7666-4710</span>
+            <span>github.com/clxxrlove</span>
+          </div>
+        </div>
+
+        <div class="section">
+          <div class="positioning">필요한 기능을 구현하는 데서 그치지 않고, 더 나은 흐름까지 함께 만드는 iOS 개발자</div>
+          <div class="intro">
+            기획 단계에서는 구현 가능성을 함께 보고, 개발이 시작된 뒤에는 직접 사용해보며 불편한 지점이나 명확하지 않은 부분을 계속 확인하는 편입니다.<br>
+            첫 사용 흐름, 로그인 없이 시작할 수 있는 접근 구조, 느린 응답 개선처럼 사용자가 바로 체감하는 문제를 주로 맡아왔습니다.<br>
+            필요한 기능뿐 아니라 프로젝트를 진행하는 데 필요한 흐름이나 도구도 직접 만들며 기여해왔습니다.
+          </div>
+        </div>
+
+        <div class="section">
+          <div class="section__label">Selected Projects</div>
+          <div class="project-list">
+            <div class="project-item">
+              <div class="project-item__top">
+                <div class="project-item__name">Keepiluv</div>
+                <div class="project-item__date">2025.11. ~ ing</div>
+              </div>
+              <div class="project-item__summary">커플의 공동 목표를 설정하고 인증하는 커플 소통 앱</div>
+              <div class="project-item__detail">
+                초대 링크로 시작해 연결 완료, 알림 진입, 온보딩까지 이어지는 흐름을 맡았습니다.<br>
+                처음 들어온 사용자가 중간에 끊기지 않도록 흐름을 정리했고, YAPP 27기 대상 프로젝트가 됐습니다.
+              </div>
+              <div class="project-item__result">
+                <strong>Universal Link 기반 초대 플로우, FCM 딥링크 라우팅, 상태 기반 온보딩 구현</strong><br>
+              </div>
+            </div>
+
+            <div class="project-item">
+              <div class="project-item__top">
+                <div class="project-item__name">Heim</div>
+                <div class="project-item__date">2024.10. ~ 2024.12.</div>
+              </div>
+              <div class="project-item__summary">AI 기반 음성 일기 앱</div>
+              <div class="project-item__detail">
+                음성 데이터 처리 이후 길어지는 응답 시간과 외부 연동에 필요한 인증 흐름을 함께 개선했습니다.<br>
+                PKCE · Keychain 기반 인증 구조를 구현해 성능과 인증 처리를 함께 다뤘습니다.
+              </div>
+              <div class="project-item__result">
+                <strong>Structured Concurrency 기반 병렬 처리로 평균 15.5초 → 3.9초 개선</strong><br>
+              </div>
+            </div>
+
+            <div class="project-item">
+              <div class="project-item__top">
+                <div class="project-item__name">Reed</div>
+                <div class="project-item__date">2025.06. ~ 2026.03.</div>
+              </div>
+              <div class="project-item__summary">감성 기반 독서 기록 앱</div>
+              <div class="project-item__detail">
+                심사 거절 대응, OCR 후처리, 알림 토큰 동기화, 검색 반응성처럼 서비스 운영에 가까운 문제를 맡았습니다.<br>
+                로그인 강제 구조를 수정해 심사 이슈를 해소했고, 실제 운영 과정에서 필요한 품질 개선을 반영했습니다.
+              </div>
+              <div class="project-item__result">
+                <strong>게스트/멤버 접근 구조 재설계, OCR 후처리, APNs · FCM 동기화 구현</strong><br>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="section">
+          <div class="section__label">Relevant Background</div>
+          <div class="background-list">
+            <div class="background-item">
+              <div class="background-item__title">YAPP 27기</div>
+              <div class="background-item__sub">
+                Keepiluv iOS 개발자로 참여했습니다.<br>
+                초대 링크, 연결 흐름, 알림 진입, 온보딩 상태를 구현한 프로젝트로 데모데이 대상을 받았습니다.
+              </div>
+            </div>
+
+            <div class="background-item">
+              <div class="background-item__title">YAPP 26기</div>
+              <div class="background-item__sub">
+                Reed iOS 개발자로 참여했습니다.<br>
+                심사 대응과 OCR 후처리, 알림 동기화 기능을 다룬 프로젝트로 데모데이 최우수상을 받았습니다.
+              </div>
+            </div>
+
+            <div class="background-item">
+              <div class="background-item__title">부스트캠프 웹·모바일 9기</div>
+              <div class="background-item__sub">
+                미션을 통한 CS 및 UIKit 지식을 학습하고 피어 세션 기반 학습으로 소프트 스킬을 학습했습니다.<br>
+                Heim 프로젝트를 진행하며 4인 팀 협업과 iOS 설계·구현 경험을 쌓았습니다.<br>
+                응답 속도 개선과 인증 구조를 함께 다루며 실제 사용감에 영향을 주는 문제를 경험했습니다.
+              </div>
+            </div>
+
+            <div class="background-item">
+              <div class="background-item__title">제11회 소프트웨어 개발보안 경진대회</div>
+              <div class="background-item__sub">
+                최우수상 · 과학기술정보통신부장관<br>
+                취약점 점검 및 프롬프트 인젝션 가능성에 대한 PoC 작성 및 개선안을 적용한 경험이 있습니다.
+              </div>
+            </div>
+
+            <div class="background-item">
+              <div class="background-item__title">순천향대학교 정보보호학과</div>
+              <div class="background-item__sub">
+                2026.08. 졸업 예정 <br>
+                전공을 통해 인증, 토큰 저장, 입력 검증 같은 주제를 자연스럽게 더 중요하게 보게 됐습니다.
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="sheet" id="keepiluv">
+      <div class="page">
+        <div class="page-header">
+          <span class="page-header__name">정지용 — iOS Developer</span>
+          <span class="page-header__label">Projects 1 / 3</span>
+        </div>
+
+        <div class="project-header">
+          <div class="project-header__left">
+            <div class="project-header__name">Keepiluv</div>
+            <div class="project-header__desc">
+              커플 소통 앱 · 2025.11.22. ~ ing · 9인 팀 (iOS 2)
+            </div>
+          </div>
+          <div class="project-header__badges">
+            <span class="badge badge--accent">YAPP 27기 대상</span>
+            <span class="badge badge--neutral">App Store 출시</span>
+          </div>
+        </div>
+
+        <div class="tag-row">
+          <span class="tag">Swift</span>
+          <span class="tag">SwiftUI</span>
+          <span class="tag">TCA</span>
+          <span class="tag">MFA</span>
+          <span class="tag">Universal Link</span>
+          <span class="tag">FCM</span>
+          <span class="tag">Pulse</span>
+        </div>
+
+        <div class="project-note">커플 연결, 알림 진입, 온보딩 상태를 맡은 프로젝트입니다.</div>
+
+        <div class="two-col">
+          <div>
+            <div class="item-group">
+              <div class="item-group__title">Universal Link 기반 초대 플로우</div>
+              <ul class="item-list">
+                <li class="item">
+                  <span class="item__chip">문제</span>
+                  <span class="item__text">초대 링크를 받았을 때 앱 설치 여부에 따라 진입 흐름이 달라지고, 설치 후 다음 단계로 이어지지 않을 수 있었습니다.</span>
+                </li>
+                <li class="item">
+                  <span class="item__chip">해결</span>
+                  <span class="item__text">서버에 AASA를 적용해 Universal Link 기반 초대 플로우를 구현하고, 링크 탭 시 앱이 설치돼 있으면 실행하고 없으면 App Store로 이동하도록 구성했습니다.</span>
+                </li>
+                <li class="item">
+                  <span class="item__chip">결과</span>
+                  <span class="item__text">초대 링크를 통해 앱으로 진입한 뒤 커플 연결과 이후 정보 입력 플로우를 이어서 진행할 수 있게 했습니다.</span>
+                </li>
+              </ul>
+            </div>
+
+            <div class="item-group">
+              <div class="item-group__title">FCM 라우팅과 알림 진입 정리</div>
+              <ul class="item-list">
+                <li class="item">
+                  <span class="item__chip">문제</span>
+                  <span class="item__text">찌르기, 목표 완료, 반응처럼 알림 유형이 늘어나면서 알림별 화면 진입 규칙을 따로 관리하기 어려웠습니다.</span>
+                </li>
+                <li class="item">
+                  <span class="item__chip">해결</span>
+                  <span class="item__text"><code>twix://notification/[type]</code> 형태의 딥링크를 enum으로 매핑하고 Coordinator에서 화면 전환을 처리했습니다. 알림 센터에는 lastId 기반 커서 페이지네이션과 IdentifiedArray를 적용했습니다.</span>
+                </li>
+                <li class="item">
+                  <span class="item__chip">결과</span>
+                  <span class="item__text">알림 타입이 늘어나도 진입 규칙과 목록 상태를 한 구조 안에서 관리할 수 있게 했습니다.</span>
+                </li>
+              </ul>
+            </div>
+          </div>
+
+          <div>
+            <div class="item-group">
+              <div class="item-group__title">연결 대기와 온보딩 상태 설계</div>
+              <ul class="item-list">
+                <li class="item">
+                  <span class="item__chip">문제</span>
+                  <span class="item__text">상대방 연결 완료를 기다리는 구간과 이미 입력한 정보를 다시 받는 구간이 불편 요소였습니다.</span>
+                </li>
+                <li class="item">
+                  <span class="item__chip">해결</span>
+                  <span class="item__text">연결 대기 화면은 polling으로 상태를 확인해 즉시 다음 단계로 넘기고, 온보딩은 <code>coupleConnection → profileSetup → anniversarySetup → completed</code> 상태를 기준으로 완료된 입력을 건너뛰도록 구성했습니다.</span>
+                </li>
+                <li class="item">
+                  <span class="item__chip">결과</span>
+                  <span class="item__text">상대방이 먼저 입력한 정보는 다시 받지 않도록 처리해 중복 입력 단계를 덜었습니다.</span>
+                </li>
+              </ul>
+            </div>
+
+            <div class="item-group">
+              <div class="item-group__title">TCA + MFA 구조 정리</div>
+              <ul class="item-list">
+                <li class="item">
+                  <span class="item__chip">문제</span>
+                  <span class="item__text">전역 상태 중심의 TCA와 모듈 분리를 추구하는 MFA를 함께 쓰면서 화면 전환과 모듈 의존성이 복잡해졌습니다.</span>
+                </li>
+                <li class="item">
+                  <span class="item__chip">해결</span>
+                  <span class="item__text">Interface / Implementation 분리, ViewFactory 패턴, Coordinator Reducer를 두고 상위 모듈이 하위 뷰 구현을 직접 알지 않도록 구성했습니다.</span>
+                </li>
+                <li class="item">
+                  <span class="item__chip">결과</span>
+                  <span class="item__text">화면 전환과 모듈 경계를 분리해 기능 추가 시 의존성을 줄였습니다.</span>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="sheet" id="heim">
+      <div class="page">
+        <div class="page-header">
+          <span class="page-header__name">정지용 — iOS Developer</span>
+          <span class="page-header__label">Projects 2 / 3</span>
+        </div>
+
+        <div class="project-header">
+          <div class="project-header__left">
+            <div class="project-header__name">Heim</div>
+            <div class="project-header__desc">
+              AI 기반 음성 일기 앱 · 2024.10.28. ~ 2024.12.05. · 4인 iOS 팀
+            </div>
+          </div>
+          <div class="project-header__badges">
+            <span class="badge badge--neutral">부스트캠프 웹·모바일 9기</span>
+          </div>
+        </div>
+
+        <div class="tag-row">
+          <span class="tag">CoreML</span>
+          <span class="tag">Gemini API</span>
+          <span class="tag">Structured Concurrency</span>
+          <span class="tag">PKCE</span>
+          <span class="tag">Keychain</span>
+          <span class="tag">AVAudioPlayer</span>
+        </div>
+
+        <div class="project-note">음성 일기 데이터 처리, 인증, 입력 방어를 다룬 프로젝트입니다.</div>
+
+        <div class="two-col">
+          <div>
+            <div class="item-group">
+              <div class="item-group__title">응답 시간 15.5초 → 3.9초 개선</div>
+              <div class="metric-box">
+                <span class="metric-box__main">15.5s → 3.9s</span>
+                <div class="metric-box__sub">
+                  Structured Concurrency 기반 병렬 처리<br>
+                  약 4배 개선
+                </div>
+              </div>
+              <ul class="item-list">
+                <li class="item">
+                  <span class="item__chip">문제</span>
+                  <span class="item__text">음성 데이터 가공 과정이 순차적으로 실행되면서 응답 시간이 길었습니다.</span>
+                </li>
+                <li class="item">
+                  <span class="item__chip">해결</span>
+                  <span class="item__text">프롬프트 엔지니어링으로 생성형 AI 답변 길이와 형식을 제한하고, Structured Concurrency 기반 병렬 처리로 전환했습니다. 응답을 기다리는 동안에는 애니메이션 기반 로딩 뷰도 설계했습니다.</span>
+                </li>
+                <li class="item">
+                  <span class="item__chip">결과</span>
+                  <span class="item__text">최악 기준 약 4배 수준으로 줄였고, 평균 응답 시간은 15.5초에서 3.9초로 낮췄습니다.</span>
+                </li>
+              </ul>
+            </div>
+
+            <div class="item-group">
+              <div class="item-group__title">PKCE + Keychain 인증 처리</div>
+              <ul class="item-list">
+                <li class="item">
+                  <span class="item__chip">문제</span>
+                  <span class="item__text">외부 서비스 연동을 위해 인증 구조와 토큰 저장 방식을 정리할 필요가 있었습니다.</span>
+                </li>
+                <li class="item">
+                  <span class="item__chip">해결</span>
+                  <span class="item__text">OAuth 2.1 PKCE 흐름을 구현하고, Keychain 기반 Token Storage 로직으로 토큰을 관리했습니다.</span>
+                </li>
+                <li class="item">
+                  <span class="item__chip">결과</span>
+                  <span class="item__text">외부 서비스 연동에 필요한 인증 절차와 토큰 저장 구조를 앱 안에서 분리했습니다.</span>
+                </li>
+              </ul>
+            </div>
+          </div>
+
+          <div>
+            <div class="item-group">
+              <div class="item-group__title">프롬프트 인젝션 대응</div>
+              <ul class="item-list">
+                <li class="item">
+                  <span class="item__chip">문제</span>
+                  <span class="item__text">악의적 음성 데이터 입력 시 프롬프트 명령 인젝션 가능성이 있었습니다.</span>
+                </li>
+                <li class="item">
+                  <span class="item__chip">해결</span>
+                  <span class="item__text">입력값 길이 제한과 래핑을 적용하고, 시스템 프롬프트와 사용자 입력 값을 분리하는 정책을 적용했습니다.</span>
+                </li>
+                <li class="item">
+                  <span class="item__chip">결과</span>
+                  <span class="item__text">악성 입력이 프롬프트 명령으로 해석되지 않도록 차단 조치를 반영했습니다.</span>
+                </li>
+              </ul>
+            </div>
+
+            <div class="item-group">
+              <div class="item-group__title">외부 API 의존성 조정</div>
+              <ul class="item-list">
+                <li class="item">
+                  <span class="item__chip">문제</span>
+                  <span class="item__text">감정에 따른 음악 추천 기능을 Spotify API 기준으로 설계했지만, 개발 중 추천 API 지원 종료가 발생했습니다.</span>
+                </li>
+                <li class="item">
+                  <span class="item__chip">해결</span>
+                  <span class="item__text">관련 기능을 제거하고, 핵심 기능을 외부 서비스에 의존할 때 생기는 리스크를 다시 점검했습니다.</span>
+                </li>
+                <li class="item">
+                  <span class="item__chip">결과</span>
+                  <span class="item__text">이후 API를 고를 때 대체 가능성과 백업 플랜을 함께 보게 됐습니다.</span>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="sheet" id="reed">
+      <div class="page">
+        <div class="page-header">
+          <span class="page-header__name">정지용 — iOS Developer</span>
+          <span class="page-header__label">Projects 3 / 3</span>
+        </div>
+
+        <div class="project-header">
+          <div class="project-header__left">
+            <div class="project-header__name">Reed</div>
+            <div class="project-header__desc">
+              독서 기록 앱 · 2025.06.11. ~ 2026.03.29. · 9인 팀 (iOS 2) · 서비스 종료
+            </div>
+          </div>
+          <div class="project-header__badges">
+            <span class="badge badge--accent">App Store 배포</span>
+            <span class="badge badge--neutral">YAPP 26기 최우수상</span>
+          </div>
+        </div>
+
+        <div class="tag-row">
+          <span class="tag">UIKit</span>
+          <span class="tag">Combine</span>
+          <span class="tag">Tuist</span>
+          <span class="tag">Clean Architecture</span>
+          <span class="tag">OCR</span>
+          <span class="tag">APNs / FCM</span>
+          <span class="tag">Fastlane CI</span>
+        </div>
+
+        <div class="project-note">앱 심사 대응, OCR 후처리, 검색과 알림 기능을 맡은 프로젝트입니다.</div>
+
+        <div class="two-col">
+          <div>
+            <div class="item-group">
+              <div class="item-group__title">App Store 심사 거절 대응과 접근 구조 재설계</div>
+              <ul class="item-list">
+                <li class="item">
+                  <span class="item__chip">문제</span>
+                  <span class="item__text">로그인 없이 앱에 진입할 수 없는 구조 때문에 HIG 위반으로 심사에서 거절됐습니다.</span>
+                </li>
+                <li class="item">
+                  <span class="item__chip">해결</span>
+                  <span class="item__text">서버팀과 논의해 사용자 ID가 필요한 API만 Authorization 헤더를 요구하도록 바꾸고, 기본 진입을 게스트 모드로 전환했습니다. AppCoordinator와 AccessModeCenter에서 접근 모드를 관리하고, 인증이 필요한 경우에만 로그인을 유도했습니다.</span>
+                </li>
+                <li class="item">
+                  <span class="item__chip">결과</span>
+                  <span class="item__text">로그인 강제 구조를 수정해 심사 거절 사유를 해소했습니다.</span>
+                </li>
+              </ul>
+            </div>
+
+            <div class="item-group">
+              <div class="item-group__title">OCR 후처리 파이프라인</div>
+              <ul class="item-list">
+                <li class="item">
+                  <span class="item__chip">문제</span>
+                  <span class="item__text">OCR 인식 텍스트의 품질이 낮아 후처리가 필요했습니다.</span>
+                </li>
+                <li class="item">
+                  <span class="item__chip">해결</span>
+                  <span class="item__text">NLTokenizer, NLTagger, UITextChecker를 조합해 후처리 모듈을 설계하고, delta를 계산해 sigmoid 함수로 변환한 confidence를 기준으로 텍스트를 다듬었습니다.</span>
+                </li>
+                <li class="item">
+                  <span class="item__chip">결과</span>
+                  <span class="item__text">후처리를 통해 OCR 인식 텍스트 품질을 개선했습니다.</span>
+                </li>
+              </ul>
+            </div>
+          </div>
+
+          <div>
+            <div class="item-group">
+              <div class="item-group__title">APNs / FCM 토큰 라이프사이클 관리</div>
+              <ul class="item-list">
+                <li class="item">
+                  <span class="item__chip">문제</span>
+                  <span class="item__text">알림 권한 상태 변화나 토큰 갱신 이벤트를 놓치면 서버와 기기 상태가 어긋날 수 있었습니다.</span>
+                </li>
+                <li class="item">
+                  <span class="item__chip">해결</span>
+                  <span class="item__text">APNs와 FCM 환경 설정, 토큰 수명주기, 권한 상태 변화를 함께 고려해 서버와 동기화하는 구조를 구현했습니다.</span>
+                </li>
+                <li class="item">
+                  <span class="item__chip">결과</span>
+                  <span class="item__text">권한 상태 변화와 토큰 갱신 이벤트를 서버와 동기화할 수 있게 됐습니다.</span>
+                </li>
+              </ul>
+            </div>
+
+            <div class="item-group">
+              <div class="item-group__title">검색 반응성 정리</div>
+              <ul class="item-list">
+                <li class="item">
+                  <span class="item__chip">문제</span>
+                  <span class="item__text">검색 입력마다 요청을 보내면 중복 호출이 많아지고 입력 흐름도 불안정해질 수 있었습니다.</span>
+                </li>
+                <li class="item">
+                  <span class="item__chip">해결</span>
+                  <span class="item__text">디바운스 대신 쓰로틀을 적용해 입력 반응성을 유지하면서 순간적인 중복 요청을 줄였고, UserDefaults 기반 최근 검색어와 페이지네이션도 함께 구현했습니다.</span>
+                </li>
+                <li class="item">
+                  <span class="item__chip">결과</span>
+                  <span class="item__text">사용자 입력에 바로 반응하면서도 중복 요청을 줄이는 검색 구조를 구현했습니다.</span>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+</body>
+</html>
